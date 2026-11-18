@@ -5,10 +5,10 @@ const CONTENT = {
   Letra: [...'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'],
   Número: Array.from({ length: 10 }, (_, i) => String(i + 1)),
   Color: ['Rojo', 'Azul', 'Amarillo', 'Verde', 'Naranja', 'Morado', 'Rosado', 'Café', 'Negro', 'Blanco'],
-  Palabra: ['Hola', 'Adiós', 'Gracias', 'Por favor', 'Sí', 'No', 'Mamá', 'Papá', 'Agua', 'Amigo'],
+  Palabra: ['Hola', 'Chao', 'Buenos días', 'Buenas tardes', 'Buenas noches', 'Gracias', 'Por favor', 'Perdón', 'Bienvenido', 'Mamá'],
 }
 const ITEMS = Object.entries(CONTENT).flatMap(([c, ts]) => ts.map(t => [c, t]))
-const slug = t => t === 'Ñ' ? 'enie' : t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/ /g, '_')
+const slug = t => t === 'Ñ' ? 'enie' : t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/ /g, '-')
 const shuf = a => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]] } return b }
 
 function opciones(cat, resp) { // respuesta correcta + 3 distractores de la misma categoría

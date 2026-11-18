@@ -1,29 +1,34 @@
 import { useEffect, useState } from 'react'
 import Abecedario from './Abecedario.jsx'
 import QueSenaEs from './QueSenaEs.jsx'
+import MasVeloz from './MasVeloz.jsx'
 
 /* ---------- Datos (edita aquí los textos) ---------- */
-const clases = [
-  ['saludosbasicos', 'Saludos Básicos', 'Principiante', '#fff1b8'],
-  ['numeros', 'Números: 1 - 10', 'Principiante', '#ffd9b3'],
-  ['colores', 'Colores', 'Principiante', '#dff5d0'],
-  ['familia', 'Familia', 'Intermedio', '#cdf5e4'],
-  ['animales', 'Animales', 'Intermedio', '#d9d0ff'],
-  ['emociones', 'Emociones', 'Intermedio', '#ecd0ff'],
+const inicio = [ // "Para empezar": van primero y separadas, no son niveles importantes
+  ['intro', 'Introducción a la LSC', '👋', '#dff0ff', '3_jJ1GaWWQg'],
+  ['historia', 'Historia de la LSC', '📜', '#fff1b8', 'YFgOJvj8p5o'],
 ]
-const videos = [
-  ['Introducción a la lengua de señas', 'Profe: Ana Torres, 2024', 'video1.jpg'],
-  ['El alfabeto en señas', 'Profe: Luis Gómez, 2024', 'video2.jpg'],
-  ['Señas para niños', 'Profe: María López, 2024', 'video3.jpg'],
-  ['Conversaciones cotidianas', 'Profe: Ana Torres, 2024', 'video4.jpg'],
-  ['Historia de la comunidad sorda', 'Profe: Pedro Ruiz, 2024', 'video5.jpg'],
+const clases = [ // [clave, nombre, nivel, color, id de video de YouTube (o null)]
+  ['abecedario', 'Abecedario', 'Principiante', '#ffffff', 'tQMTUDvgC9M'],
+  ['saludosbasicos', 'Saludos Básicos', 'Principiante', '#fff1b8', 'gMkR1UXDLOU'],
+  ['numeros', 'Números: 1 - 10', 'Principiante', '#ffd9b3', null],
+  ['colores', 'Colores', 'Principiante', '#dff5d0', null],
+  ['familia', 'Familia', 'Intermedio', '#cdf5e4', null],
+  ['animales', 'Animales', 'Intermedio', '#d9d0ff', null],
+  ['emociones', 'Emociones', 'Intermedio', '#ecd0ff', null],
+]
+const videos = [ // [título, id de YouTube]
+  ['Introducción a la lengua de señas', '3_jJ1GaWWQg'],
+  ['El alfabeto en señas', 'tQMTUDvgC9M'],
+  ['Clase: Saludos básicos', 'gMkR1UXDLOU'],
+  ['Historia de la LSC', 'YFgOJvj8p5o'],
 ]
 const insignias = [
   ['🌱', 'Primer paso', 'Completaste tu primera clase'],
   ['🔥', 'En racha', '3 días seguidos'],
   ['🧠', 'Memoriza', 'Completaste flashcards'],
 ]
-const tabs = { home: 'home', abecedario: 'home', quesena: 'home', grabadas: 'clases', clases: 'clases', evalua: 'progreso', progreso: 'progreso', detalle: 'progreso', perfil: 'perfil' }
+const tabs = { home: 'home', abecedario: 'home', quesena: 'home', masveloz: 'home', grabadas: 'clases', clases: 'clases', evalua: 'progreso', progreso: 'progreso', detalle: 'progreso', perfil: 'perfil' }
 const go = id => { location.hash = id }
 const img = n => ({ '--img': `url(/assets/img/${n})` })
 
@@ -32,8 +37,9 @@ const Cta = ({ to, children, onClick }) => <div className="cta"><button classNam
 
 export default function App() {
   const [id, setId] = useState(location.hash.slice(1) || 'inicio1')
+  const [vid, setVid] = useState(null) // video de YouTube abierto en Clases grabadas
   useEffect(() => {
-    const h = () => setId(location.hash.slice(1) || 'inicio1')
+    const h = () => { const n = location.hash.slice(1) || 'inicio1'; setId(n); if (n !== 'grabadas') setVid(null) }
     addEventListener('hashchange', h); return () => removeEventListener('hashchange', h)
   }, [])
   useEffect(() => { // Secuencia de arranque: Inicio 1 → 2 → 3 → Login
@@ -65,27 +71,43 @@ export default function App() {
         <div className="bottom"><button className="btn" type="submit">Registrarse</button>
           <button className="lnk" type="button" onClick={() => go('login')}>Ingresar</button></div></form></S>,
     home: () => <S>
-      <div className="hero"><div className="vid ph" style={img('home-clase.jpg')} />
-        <div className="hero-row"><b>Clase 1: Abecedario</b><button className="play" aria-label="Reproducir" /></div>
+      <div className="hero"><div className="vid ph conejo" role="button" style={img('abc-conejo.jpg')} onClick={() => { setVid('tQMTUDvgC9M'); go('grabadas') }} />
+        <div className="hero-row"><b>Clase 1: Abecedario</b><button className="play" aria-label="Reproducir" onClick={() => { setVid('tQMTUDvgC9M'); go('grabadas') }} /></div>
         <small>Continúa donde lo dejaste</small></div>
       <div className="tabs"><a href="#clases">Clases</a><a href="#home" className="on">Juegos</a><a href="#evalua">Evalúate</a><a href="#grabadas">Clases grabadas</a></div>
       <div className="games">
         <a className="g g1" href="#quesena"><img src="/assets/que-sena-es.png" alt="" /><span>¿Qué seña es?</span><i /></a>
         <a className="g g2" href="#abecedario"><img src="/assets/haz-la-sena.png" alt="" /><span>¡Haz la seña!</span><i /></a>
-        <a className="g g3" href="#detalle"><img src="/assets/mas-veloz.png" alt="" /><span>Más veloz</span><i /></a>
+        <a className="g g3" href="#masveloz"><img src="/assets/mas-veloz.png" alt="" /><span>Más veloz</span><i /></a>
         <a className="g g4" href="#detalle"><img src="/assets/abc-manos.png" alt="" /><span>ABC o manos?</span><i /></a>
       </div></S>,
     abecedario: () => <Abecedario go={go} />,
     quesena: () => <QueSenaEs go={go} />,
-    clases: () => <S cls="pink"><Top><h3>Aprende +</h3></Top>
-      <div className="wrap"><div className="list two">{clases.map(c =>
-        <button key={c[0]} className="row" onClick={() => go('grabadas')}>
-          <span className="sq" style={{ background: c[3] }}><img src={`/assets/clases/${c[0]}.png`} alt="" /></span>
-          <span><b>{c[1]}</b><span className={`pill ${c[2] === 'Principiante' ? 'p' : ''}`}>{c[2]}</span></span></button>)}</div></div></S>,
+    masveloz: () => <MasVeloz go={go} />,
+    clases: () => {
+      const abrir = v => { if (v) setVid(v); go('grabadas') }
+      return <S cls="pink"><Top><h3>Aprende +</h3></Top>
+        <div className="wrap">
+          <h4 className="camino">Para empezar</h4>
+          <div className="list two">{inicio.map(c =>
+            <button key={c[0]} className="row" onClick={() => abrir(c[4])}>
+              <span className="sq" style={{ background: c[3], fontSize: 30 }}>{c[2]}</span>
+              <span><b>{c[1]}</b><span className="pill">Video</span></span></button>)}</div>
+          <h4 className="camino sep">Clases</h4>
+          <div className="list two">{clases.map(c =>
+            <button key={c[0]} className="row" onClick={() => abrir(c[4])}>
+              <span className="sq" style={{ background: c[3] }}><img src={`/assets/clases/${c[0]}.png`} alt="" /></span>
+              <span><b>{c[1]}</b><span className={`pill ${c[2] === 'Principiante' ? 'p' : ''}`}>{c[2]}</span></span></button>)}</div>
+        </div></S>
+    },
     grabadas: () => <S><Top><h3>Conecta con LSC</h3></Top>
-      <div className="wrap"><div className="list two">{videos.map(v =>
-        <div key={v[2]} className="vrow"><div className="vth ph" style={img(v[2])}><span className="play" /></div>
-          <div><p>{v[0]}</p><small>{v[1]}</small><span className="pill">Principiante</span></div></div>)}</div></div></S>,
+      <div className="wrap">
+        {vid && <iframe className="yt" src={`https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&rel=0`} title="Clase grabada"
+          allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />}
+        <div className="list two">{videos.map(v =>
+          <div key={v[1]} className="vrow" role="button" tabIndex={0} onClick={() => { setVid(v[1]); window.scrollTo(0, 0) }}>
+            <div className="vth ph" style={{ '--img': `url(https://i.ytimg.com/vi/${v[1]}/hqdefault.jpg)` }}><span className="play" /></div>
+            <div><p>{v[0]}</p><small>Clase grabada</small></div></div>)}</div></div></S>,
     evalua: () => <S><Top><span className="chip">Pon aprueba tu <b><i>Conocimiento</i></b></span></Top>
       <div className="wrap"><p className="intro">Responde 5 preguntas y sube de nivel, cada respuesta correcta vale 20 puntos</p>
         <div className="ev">
@@ -126,7 +148,7 @@ export default function App() {
     <div className="app on" id="app">
       <main className="pane">{pantalla}</main>
       <nav className="nav" aria-label="Principal">
-        {nav.map(([t, alt]) => <a key={t} href={`#${t}`} className={tabs[id] === t ? 'on' : ''}><img src={`/assets/nav/${t}.png`} alt={alt} /></a>)}
+        {nav.map(([t, alt]) => <a key={t} href={`#${t}`} data-t={t} className={tabs[id] === t ? 'on' : ''}><img src={`/assets/nav/${t}.png`} alt={alt} /></a>)}
       </nav>
     </div>
   )
